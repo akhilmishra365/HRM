@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+     <link rel="stylesheet" th:href="@{../css/style.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>Get Attendance Records</title>
+</head>
+<style>
+        
+
+        .status-p {
+            background-color: green;
+            color: white;
+        }
+
+        .status-a {
+            background-color: red;
+            color: white;
+        }
+
+        .status-h {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+<body>
+    <div class="header">
+
+    
+        <h2>Welcome, <span th:text="${user.fullname}">User Fullname</span></h2>
+        <h3 th:text="${employee}">Employee</h3>
+
+        <span class="logout-button" sec:authorize="isAuthenticated()">
+            <a th:href="@{/logout}">Logout</a>
+        </span>
+    
+    </div>
+
+    <div class="">
+        <div class="sidebar">
+            <div >
+<!--                 <img src="https://scontent.fdel11-4.fna.fbcdn.net/v/t31.18172-8/26758225_1440458946063235_6014983166934445662_o.jpg?_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=o3gMcHar-9QQ7kNvgFj6wHQ&_nc_ht=scontent.fdel11-4.fna&oh=00_AYDLGPcMM0frMjiyDa2iofl6XpIFwEQGDQUNTEvu9zOceA&oe=66920F61" alt="profile_picture">
+ -->               
+  <!-- <h3 th:text="${user.fullname}">User Fullname</h3> -->
+                <h3  style="display:none"; id="userId" th:text="${user.id}">User ID</h3>
+               <!--  <p th:text="${role}">User Role</p> -->
+            </div>
+            <div class="">
+                <ul class="list">
+                    <li><a href="/user-page" > <span class="icon"><i class="fas fa-home"></i></span> <span class="item">Home</span></a></li>
+                    <li><a href="#"> <span class="icon"><i class="fas fa-desktop"></i></span> <span class="item">My Dashboard</span></a></li>
+                    <li><a href="#"> <span class="icon"><i class="fas fa-user-friends"></i></span> <span class="item">Employee</span></a></li>
+                    <li><a href="/user/clockings" class="active"> <span class="icon"><i class="fas fa-tachometer-alt"></i></span> <span class="item">Attendance</span></a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"> <span class="icon"><i
+								class="fas fa-chart-line"></i></span> <span class="item">Ticket</span>
+							<b class="caret"></b>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a href="/user/createTicket"><span class="icon"><i
+										class="fas fa-question-circle"></i></span> Query</a></li>
+							<li><a href="/createForm"><span class="icon"><i
+										class="fas fa-ticket-alt"></i></span> Reimbursement</a></li>
+						</ul></li>
+					<li class="dropdown"><a href="#"> <span class="icon"><i
+								class="fas fa-cog"></i></span> <span class="item">Settings</span>
+					</a>
+						<div class="dropdown-content">
+							<a class="dropdown-bg-color"
+								th:href="@{/updatePassword/{id}(id=${user.id})}">Change
+								Password</a>
+							<!-- Add more options here -->
+							<!-- Example: -->
+							<!-- <a class="dropdown-bg-color" href="#">Another Option</a> -->
+						</div></li>
+				</ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Get Attendance Records</h1>
+        <table class="table-responsive" id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Clock In Date</th>
+                    <th>Clock Out Date</th>
+                    <th>status</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Attendance records will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const userId = document.getElementById('userId').textContent.trim();
+        console.log("userId: " + userId);
+        getAttendanceRecords(userId);
+    });
+
+        async function getAttendanceRecords(userId) {
+            try {
+                const response = await fetch(`/api/clockings/${userId}`);
+                if (!response.ok) {
+                    alert('Failed to fetch attendance records');
+                    return;
+                }
+
+                const attendanceRecords = await response.json();
+                displayAttendanceRecords(attendanceRecords);
+            } catch (error) {
+                console.error('Error fetching attendance records:', error);
+                alert('Error fetching attendance records');
+            }
+        }
+        function getStatusClass(status) {
+            switch (status) {
+                case 'P':
+                    return 'status-p';
+                case 'A':
+                    return 'status-a';
+                case 'H':
+                    return 'status-h';
+                default:
+                    return '';
+            }
+        }
+
+        function displayAttendanceRecords(records) {
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            records.forEach(record => {
+            	const date = record.date ? new Date(record.date).toLocaleDateString(navigator.language) : 'N/A';
+            	const clockInDate = record.clockInDate ? new Date(record.clockInDate).toLocaleString(navigator.language, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+                const clockOutDate = record.clockOutDate ? new Date(record.clockOutDate).toLocaleString(navigator.language, { hour: '2-digit', minute: '2-digit' }) : 'N/A';
+                const status = record.user ? record.status : 'N/A';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                	<td>${date}</td>
+                    <td>${clockInDate}</td>
+                    <td>${clockOutDate}</td>
+                    <td class="${getStatusClass(status)}">${status}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+    <script th:src="@{/js/index.js}" type="text/javascript"></script>
+</body>
+</html>
