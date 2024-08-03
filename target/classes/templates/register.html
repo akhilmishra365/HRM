@@ -1,69 +1,83 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Learning Saint</title>
+    <title>Learningsaint - Registration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-   <link rel="stylesheet" th:href="@{/css/Forms.css}">
+    <link rel="stylesheet" th:href="@{../css/style.css}">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+        .error {
+            color: red;
+            padding: 15px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="../static/img/login-logo.png"   th:src="@{/img/logo.svg}" class="logoimg" alt="navimg">
-        <div class="rectangle1">
-            <p class="login_text">Fill The Details To Create Your Account</p>
-            <img src="../static/img/login-image.png" th:src="@{/img/login-image.png}" class="login-img" alt="profile_picture">
-            <img src="../static/img/saly-1.png"  th:src="@{/img/saly-1.png}" class="slay-img" alt="profile_picture">
-        </div>
-        <div class="rectangle2">
-            <div class="login_form_div">
-                <div class="form_content">
-                    <div class="login_text_heading">
-                      Create an account
-                    </div>
-                    
-                    <form th:action="@{/registration}" method="post" th:object="${user}" class="signin-form">
-                          <div class="form_data">
-                            <label class="label_text" for="fullname">Full Name</label>
-                            <input th:field="*{fullname}" type="text" id="fullname" name="fullname"  class="inputbox" placeholder="Enter your full name" required>
+    <section class="ftco-section">
+    <nav>
+    <img src="../static/img/login-logo.png" class="" th:src="@{/img/logo.png}" alt="navimg">
+    </nav>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center mb-5">
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-12 col-lg-10">
+                    <div class="wrap d-md-flex">
+                        <div class="img" th:style="'background-image: url(' + @{img/Rectangle-31.png} + ');'">
+                        <img src="../static/img/login-image.png" class="login-img" th:src="@{/img/login-image.png}" alt="profile_picture">
+                        <img src="../static/img/saly-1" class="slay-img" th:src="@{/img/saly-1.png}" alt="profile_picture">
                         </div>
-                        <div class="form_data">
-                            <label class="label_text" for="username">Email</label>
-                            <input th:field="*{email}" type="email" id="email" name="email" class="inputbox" placeholder="Enter your email" required>
-                            <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
-                            <div th:if="${emailError != null}" class="error">[[${emailError}]]</div>
-                        </div>
-                       
-                        <div class="form_data">
-                            <div class="label_and_forgot">
-                                <label class="label_text" for="password">Password</label>
+                        <div class="login-wrap p-4 p-md-5">
+                            <div class="d-flex">
+                                <div class="w-100">
+                                    <h3 class="mb-4">Register</h3>
+                                </div>
+                                <div class="w-100">
+                                    <p class="social-media d-flex justify-content-end">
+                                        <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-facebook"></span></a>
+                                        <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-twitter"></span></a>
+                                    </p>
+                                </div>
                             </div>
-                            <input th:field="*{password}" type="password" id="password" name="password" class="inputbox" placeholder="Enter your password" required>
-                            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
-                            <div th:if="${passwordError != null}" class="error">[[${passwordError}]]</div>
-                        </div>
-                        <div class="form_data">
-                            <button type="submit" class="button">Register</button>
-                        </div>
-                    </form>
-                     <div class="message" th:if="${message != null}">
+                            <form th:action="@{/registration}" method="post" th:object="${user}" class="signin-form">
+                                <div class="form-group mb-3">
+                                    <label class="label" for="fullname">Fullname</label>
+                                    <input th:field="*{fullname}" type="text" id="fullname" name="fullname" class="form-control" placeholder="Enter your fullname" required>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label" for="email">Email</label>
+                                    <input th:field="*{email}" type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></div>
+                                    <div th:if="${emailError != null}" class="error">[[${emailError}]]</div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="label" for="password">Password</label>
+                                    <input th:field="*{password}" type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+                                    <div th:if="${passwordError != null}" class="error">[[${passwordError}]]</div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Register</button>
+                                </div>
+                            </form>
+                            <div class="message" th:if="${message != null}">
                                 [[${message}]]
-                    </div>
-                    <div class="form_data">
-                       
-                        <div class="noaccount">
-                            <p class="NoAccount_text">Already have an account? <a th:href="@{/login}" class = "link_text">Login here</a></p>
-
+                            </div>
+                            <p class="text-center">Already have an account? <a th:href="@{/login}">Login here</a></p>
+                            <p class="text-center"><a th:href="@{/forgot-password}">Forgot Password?</a></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.js"></script>
     <script src="js/bootstrap.min.js"></script>

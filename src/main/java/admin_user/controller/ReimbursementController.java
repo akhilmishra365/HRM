@@ -42,9 +42,7 @@ public class ReimbursementController {
 	@GetMapping("/admin/reimbsFile")
     public String viewFiles(Model model) {
         // Get the UserDetails from the security context
-		System.out.println("hellllllllllllooooooooooooooooo");
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println("hllllllllllllll2");
         if (principal instanceof UserDetails) {
         	System.out.println("hllllllllll333333333333");
             CustomUserDetail userDetails = (CustomUserDetail) principal;
@@ -54,7 +52,7 @@ public class ReimbursementController {
             //List<TicketDto> tickets = ticketService.getTicketsForUser(userDetails.getFullname());
             List<ReimbursementDetails> reimbursementDetails = reimbursementService.getAllFiles(userDetails.getFullname());
             System.out.println("reimbursementDetailsreimbursementDetails"+reimbursementDetails);
-            model.addAttribute("user", userDetails.getUsername()); // Assuming userDetails has a getUser method
+            model.addAttribute("user", userDetails.getFullname()); // Assuming userDetails has a getUser method
             model.addAttribute("role", role);
             model.addAttribute("reimbursementDetails", reimbursementDetails);
         } else {

@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Dashboard</title>
-<link rel="stylesheet" th:href="@{../css/style.css}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" th:href="@{../css/style.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
+
 <body>
 
     <div class="header">
@@ -24,19 +25,53 @@
 
     <div class="sidebar">
         <ul class="list">
-            <li><a href="/admin-page"><span class="icon"><i class="fas fa-home"></i></span> <span class="item">Home</span></a></li>
-            <li><a href="#"><span class="icon"><i class="fas fa-user"></i></span> <span class="item">My Profile</span></a></li>
-            <li><a href="/employee/all"><span class="icon"><i class="fas fa-users"></i></span> <span class="item">Employee</span></a></li>
-            <li><a href="/admin/clockings"><span class="icon"><i class="fas fa-calendar-check"></i></span> <span class="item">Attendance</span></a></li>
-            <li><a href="/admin/tickets"><span class="icon"><i class="fas fa-ticket-alt"></i></span> <span class="item">Tickets</span></a></li>
-            <li><a href="/admin/reimbsFile" class="active"><span class="icon"><i class="fas fa-ticket-alt"></i></span> <span class="item">Reimbus</span></a></li>
-            <li><a href="/all/users"><span class="icon"><i class="fas fa-users"></i></span> <span class="item">Roles</span></a></li>
-            <li><a href="#"><span class="icon"><i class="fas fa-cog"></i></span> <span class="item">Settings</span></a></li>
+            <li><a href="/admin-page"><span class="icon"><i class="fas fa-home"></i></span> <span
+                        class="item">Home</span></a></li>
+            <li><a href="#"><span class="icon"><i class="fas fa-user"></i></span> <span class="item">My
+                        Profile</span></a></li>
+            <li><a href="/employee/all"><span class="icon"><i class="fas fa-users"></i></span> <span
+                        class="item">Employee</span></a></li>
+            <li><a href="/admin/clockings"><span class="icon"><i class="fas fa-calendar-check"></i></span> <span
+                        class="item">Attendance</span></a></li>
+            <li><a href="/admin/tickets"><span class="icon"><i class="fas fa-ticket-alt"></i></span> <span
+                        class="item">Tickets</span></a></li>
+            <li><a href="/admin/reimbsFile" class="active"><span class="icon"><i class="fas fa-ticket-alt"></i></span>
+                    <span class="item">Reimbus</span></a></li>
+            <li><a href="/all/users"><span class="icon"><i class="fas fa-users"></i></span> <span
+                        class="item">Roles</span></a></li>
+            <li><a href="#"><span class="icon"><i class="fas fa-cog"></i></span> <span class="item">Settings</span></a>
+            </li>
         </ul>
     </div>
 
     <div class="main-content">
-        <h2>Reimbursement List</h2>
+        <div class="welcome">
+            <h2>Welcome back, <span th:text="${user}">User Fullname</span></h2>
+            <div class="current-date-time">
+                <h5>Today, <span id="current-date">13 January, 2024</span> <span id="current-time">11:23 AM</span></h5>
+            </div>
+        </div>
+        <div class="find-employee">
+            <form>
+                <div class="form-group form-inline">
+                    <!-- <div>
+                        <input type="text" id="empId" name="empId" placeholder="Search by name, role, department...">
+                        <button type="submit">🔍</button>
+                    </div> -->
+                    <div>
+                        <input type="text" id="userIdInput" name="userId" placeholder="Enter UserID" required>
+                        <button type="button" class="fetch-button" onclick="fetchAttendance()">🔍</button>
+                    </div>
+                    <div class="right">
+                        <button type="button" onclick="">All Departments <i class="fa-solid fa-caret-down"></i></button>
+                        <button type="button" onclick="downloadAttendance()">Export <i
+                                class="fa-solid fa-file-export"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <h2 style="font-size: 1.2vw; font-weight: bold; font-style: italic; text-decoration: underline; margin-top: 1vw; text-align: center; margin-bottom: 1.5vw;" >Reimbursement List</h2>
         <table class="table">
             <thead>
                 <tr>
@@ -59,36 +94,36 @@
                     <td th:text="${reimbursement.description}"></td>
                     <td th:text="${reimbursement.status}"></td>
                     <td th:text="${reimbursement.createdAt}"></td>
-                    <td><img th:if="${reimbursement.image != null}"
-							th:src="@{/image(id=${reimbursement.id})}" alt="Attached File"
-							width="300" height="100"
-							style="object-fit: cover; border-radius: 10px;" /> <a
-							th:if="${reimbursement.image != null}"
-							th:href="@{/download-image/{id}(id=${reimbursement.id})}"
-							download="reimbursement_image_${reimbursement.id}.jpg">
-								Download Image </a></td>
+                    <td><img th:if="${reimbursement.image != null}" th:src="@{/image(id=${reimbursement.id})}"
+                            alt="Attached File" width="auto" height="50"
+                            style="object-fit: cover; border-radius: 10px;" /> <a th:if="${reimbursement.image != null}"
+                            th:href="@{/download-image/{id}(id=${reimbursement.id})}"
+                            download="reimbursement_image_${reimbursement.id}.jpg" style="font-style: italic; font-size: 12px; ">
+                            Download Image </a></td>
                     <td>
-                    <form th:action="@{/update-files}" method="post">
-					    <input type="hidden" name="reimbursementId" th:value="${reimbursement.id}">
-					    <input type="hidden" name="userRole" th:value="${role}">
-					    <select name="status" class="form-control" required>
-					        <option th:selected="${reimbursement.status == 'Reject'}" value="Reject" style="color:red";>Reject</option>
-					        <option th:selected="${reimbursement.status == 'In Progress'}" value="In Progress" style="color:orange;";>In Progress</option>
-					        <option th:selected="${reimbursement.status == 'Approved'}" value="Approved" style="color:green";>Approved</option>
-					    </select>
-					    <button type="submit" class="btn btn-primary mt-2">Update Status</button>
-					</form>
+                        <form th:action="@{/update-files}" method="post">
+                            <input type="hidden" name="reimbursementId" th:value="${reimbursement.id}">
+                            <input type="hidden" name="userRole" th:value="${role}">
+                            <select name="status" class="form-control" onchange="this.form.submit()" required>
+                                <option th:selected="${reimbursement.status == 'Reject'}" value="Reject"
+                                    style="color:red" ;>Reject</option>
+                                <option th:selected="${reimbursement.status == 'In Progress'}" value="In Progress"
+                                    style="color:orange;" ;>In Progress</option>
+                                <option th:selected="${reimbursement.status == 'Approved'}" value="Approved"
+                                    style="color:green" ;>Approved</option>
+                            </select>
+                            <!-- <button type="submit" class="btn btn-primary mt-2">Update Status</button> -->
+                        </form>
 
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary view-btn" 
-                                th:attr="data-reimbursement-id=${reimbursement.id}, 
+                        <button type="button" class="ticketbtn view-btn" th:attr="data-reimbursement-id=${reimbursement.id}, 
                                          data-reimbursement-name=${reimbursement.user.fullname}, 
                                          data-reimbursement-category=${reimbursement.category}, 
                                          data-reimbursement-description=${reimbursement.description}, 
                                          data-reimbursement-status=${reimbursement.status}, 
-                                         data-reimbursement-created-at=${reimbursement.createdAt}" 
-                                data-toggle="modal" data-target="#reimbursementModal">View</button>
+                                         data-reimbursement-created-at=${reimbursement.createdAt}" data-toggle="modal"
+                            data-target="#reimbursementModal">View Status</button>
                     </td>
                 </tr>
             </tbody>
@@ -96,7 +131,8 @@
     </div>
 
     <!-- Reimbursement Modal -->
-    <div class="modal fade" id="reimbursementModal" tabindex="-1" role="dialog" aria-labelledby="reimbursementModalLabel" aria-hidden="true">
+    <div class="modal fade" id="reimbursementModal" tabindex="-1" role="dialog"
+        aria-labelledby="reimbursementModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -136,8 +172,8 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            $('.view-btn').on('click', function() {
+        $(document).ready(function () {
+            $('.view-btn').on('click', function () {
                 var reimbursementId = $(this).data('reimbursement-id');
                 var reimbursementName = $(this).data('reimbursement-name');
                 var reimbursementCategory = $(this).data('reimbursement-category');
@@ -156,4 +192,5 @@
     </script>
 
 </body>
+
 </html>

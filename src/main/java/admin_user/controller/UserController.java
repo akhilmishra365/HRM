@@ -62,7 +62,7 @@ public class UserController {
 //    }
 	
     @GetMapping("/admin/tickets")
-    public String viewTickets(Model model) {
+    public String viewTickets(Model model ) {
         // Get the UserDetails from the security context
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -72,7 +72,7 @@ public class UserController {
             //List<TicketDto> tickets = ticketService.getTicketsForUser(userDetails.getFullname());
             List<TicketDto> tickets = ticketService.getAllTickets(userDetails.getFullname());
             logger.info("Fetched tickets: {}", tickets);
-            model.addAttribute("user", userDetails.getUsername()); // Assuming userDetails has a getUser method
+            model.addAttribute("user", userDetails.getFullname()); // Assuming userDetails has a getUser method
             model.addAttribute("tickets", tickets);
         } else {
             // Handle error case where principal is not an instance of UserDetails
@@ -139,6 +139,8 @@ public class UserController {
 	
 	@GetMapping("/all/users")
 	public String getAllUsers(Model model ,Principal principal) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
+		model.addAttribute("user", userDetails);
 		List<User> users = userService.getAllUser();
 		model.addAttribute("users", users);
 		return "all-users";

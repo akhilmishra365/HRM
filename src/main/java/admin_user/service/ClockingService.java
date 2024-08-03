@@ -35,7 +35,7 @@ public class ClockingService {
             Clocking clocking = new Clocking();
             clocking.setUser(user);
             clocking.setClockInDate(LocalDateTime.now());
-            clocking.setStatus("A");
+            clocking.setStatus("Absent");
             return clockingRepository.save(clocking);
         }
     }
@@ -47,12 +47,12 @@ public class ClockingService {
             clocking.setClockOutDate(LocalDateTime.now());
             Duration duration = Duration.between(clocking.getClockInDate(), clocking.getClockOutDate());
             if (duration.toHours() >= 9 ) {
-                clocking.setStatus("P");
+                clocking.setStatus("Present");
             } else if(duration.toHours() >= 5 && duration.toHours() <= 9) {
-                clocking.setStatus("H");
+                clocking.setStatus("Half-Day");
             }
             else {
-            	clocking.setStatus("A");
+            	clocking.setStatus("Absent");
             }
 
             return clockingRepository.save(clocking);
